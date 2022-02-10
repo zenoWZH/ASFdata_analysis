@@ -132,7 +132,7 @@ dmypy.json
 
 *.csv
 
-.edgelist
+*.edgelist
 
 raphtory_example/
 
