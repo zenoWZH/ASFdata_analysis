@@ -137,3 +137,5 @@ dmypy.json
 raphtory_example/
 
 network_data*/
+
+*.tar.gz
