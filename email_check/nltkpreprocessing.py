@@ -15,19 +15,26 @@ from nltk.corpus import stopwords
 
 from nltk.stem.wordnet import WordNetLemmatizer
 #nltk.download('omw-1.4')
-lemma = WordNetLemmatizer()
+class EmailPreprocessor:
 
-mystopwords = ['re', 'cc', 'fwd', 'fyi']
-mystopwords = stopwords.words('english').append(mystopwords)
+    def __init__(self):
+        self.lemma = WordNetLemmatizer()
 
-def stopandlemma(txt):
-    txt = str(txt).lower()
-    tokens = word_tokenize(txt)
-    tokens = [lemma.lemmatize(x) for x in tokens]
-    tokens = [x for x in tokens if(x not in stopwords.words('english'))]
-    # very slow
-    #gc.collect()
-    return ' '.join(tokens)
+        mystopwords = ['re', 'cc', 'fwd', 'fyi']
+        self.mystopwords = stopwords.words('english').append(mystopwords)
+        self.processcounter = 0
+
+    def stopandlemma(self, txt):
+        self.processcounter+=1
+        txt = str(txt).lower()
+        tokens = word_tokenize(txt)
+        tokens = [self.lemma.lemmatize(x) for x in tokens]
+        tokens = [x for x in tokens if(x not in self.mystopwords)]
+        # very slow
+        if self.processcounter >10000 :
+            gc.collect()
+            self.processcounter = 0
+        return ' '.join(tokens)
 
 def ff(num):
     return num*num
@@ -38,9 +45,12 @@ if __name__ == '__main__' :
 
     df = pd.read_csv('./emails_nomarks.csv')
     print("Start Preprocessing")
-    #df['subject'] = df['subject'].map(lambda s: stopandlemma(str(s).lower()))
-    #df.to_csv('./emails_preprocessed_2.csv', index_label= None)
-    #print("Titles Done!!!")
+
+    epre = EmailPreprocessor()
+
+    df['subject'] = df['subject'].map(lambda s: epre.stopandlemma(str(s).lower()))
+    df.to_csv('./emails_preprocessed_3.csv', index_label= None)
+    print("Titles Done!!!")
     # Too Slow
     #df['body'] = df['body'].map(lambda s: stopandlemma(str(s).lower()))
 
@@ -59,7 +69,7 @@ if __name__ == '__main__' :
     pool.join()
 
     with Pool(6) as p:
-        result = list(tqdm(p.imap(stopandlemma, bodies, chunksize=6), total=len(bodies), desc="Multiprocess preprocessing"))
+        result = list(tqdm(p.imap(epre.stopandlemma, bodies, chunksize=6), total=len(bodies), desc="Multiprocess preprocessing"))
     p.close()
     p.join()
 
