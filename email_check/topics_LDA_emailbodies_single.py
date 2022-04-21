@@ -1,0 +1,83 @@
+import os
+import numpy as np
+import pandas as pd 
+#import modin.pandas as pd
+from tqdm import tqdm
+import re
+import datetime
+from p_tqdm import p_map
+from functools import partial
+import gc
+
+from gensim import corpora
+
+from gensim.models.ldamulticore import LdaMulticore
+
+time_resolution = '1'
+lk_path = '/mnt/data0/lkyin/'
+c_path = '../network_data'+str(time_resolution)+'/commits/'
+e_path = '../network_data'+str(time_resolution)+'/emails/'
+mix_path = '../network_data'+str(time_resolution)+'/mix/'
+
+df = pd.read_csv('./emails_preprocessed.csv')
+
+all_graduated = np.load('../all_graduated.npy').tolist()
+#all_graduated = [x.lower() for x in all_graduated]
+all_retired = np.load('../all_retired.npy').tolist()
+#all_retired = [x.lower() for x in all_retired]
+
+print('grouping by project...')
+dfgroup = df.groupby(['project_name'])
+
+print("Training Graduated model")
+#titles_graduated = list()
+bodies_graduated = list()
+#proj_graduated = list()
+for proj in all_graduated[1:2]:
+    try:
+        this_proj = dfgroup.get_group(proj.lower())
+    except BaseException as err:
+        print(err)
+        continue
+
+    #titles_graduated.extend(this_proj['subject'].values)
+    bodies_graduated.extend(this_proj['body'].values)
+print("The project name is:", proj)
+# Train LDA model with titles of graduated emails
+texts = [str(x).split() for x in bodies_graduated]
+dictionary = corpora.Dictionary(texts)
+corpus = [dictionary.doc2bow(text) for text in texts]
+del bodies_graduated
+del texts
+gc.collect()
+
+ldamodel = LdaMulticore(corpus, num_topics=20, id2word = dictionary, passes=10, random_state = 1, workers=6) 
+ldamodel.save("./body_singlegraduated_model.lda")
+print(ldamodel.print_topics(num_topics=10, num_words=10))
+
+print("Training Retired model")
+#titles_retired = list()
+bodies_retired = list()
+
+for proj in all_retired[:1]:
+    try:
+        this_proj = dfgroup.get_group(proj.lower())
+    except BaseException as err:
+        print(err)
+        continue
+
+    #titles_retired.extend(this_proj['subject'].values)
+    bodies_retired.extend(this_proj['body'].values)
+print("The project name is:", proj)
+# Train LDA model with titles of retired emails
+texts = [str(x).split() for x in bodies_retired]
+dictionary = corpora.Dictionary(texts)
+corpus = [dictionary.doc2bow(text) for text in texts]
+
+del texts
+del bodies_retired
+gc.collect()
+
+ldamodel = LdaMulticore(corpus, num_topics=20, id2word = dictionary, passes=10, random_state = 1, workers=6)
+ldamodel.save("./body_singleretired_model.lda")
+print(ldamodel.print_topics(num_topics=10, num_words=10))
