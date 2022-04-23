@@ -51,12 +51,15 @@ del bodies_graduated
 del texts
 gc.collect()
 
-ldamodel = LdaMulticore(corpus, num_topics=20, id2word = dictionary, 
-                        passes=10, random_state = 1, workers=2) 
-ldamodel.save("./body_graduated_model.lda")
-print(ldamodel.print_topics(num_topics=20, num_words=10))
-
-del corpus
-del dictionary
-del ldamodel
-gc.collect()
+try:
+    ldamodel = LdaMulticore(corpus, num_topics=20, id2word = dictionary, 
+                            passes=10, random_state = 1, workers=2) 
+    ldamodel.save("./body_graduated_model.lda")
+    print(ldamodel.print_topics(num_topics=20, num_words=10))
+    del corpus
+    del dictionary
+    del ldamodel
+    gc.collect()
+except BaseException as err:
+    print(err)
+    gc.collect()
