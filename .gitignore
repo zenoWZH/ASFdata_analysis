@@ -143,4 +143,4 @@ network_data*/
 
 # Language Models
 
-./email_cluster/bertmodel/*
+email_cluster/bertmodel/*
