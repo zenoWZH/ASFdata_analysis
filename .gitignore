@@ -140,3 +140,7 @@ raphtory_example/
 network_data*/
 
 *.tar.gz
+
+# Language Models
+
+./email_cluster/bertmodel/*
