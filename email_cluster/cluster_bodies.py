@@ -13,19 +13,26 @@ import gc
 
 df_vector_bodies = pd.DataFrame(np.load("vector200_bodies.npy"))
 
-from cuml.cluster import DBSCAN
+from cuml.cluster import HDBSCAN
 
-X = df_vector_bodies[df_vector_bodies.columns]
+X = df_vector_bodies[df_vector_bodies.columns].values
+print(X.shape)
 
-db = DBSCAN(eps=5, min_samples=20).fit(X)
+labels = HDBSCAN(min_samples=10).fit_predict(X)
+print(labels.shape)
 
-labels = db.labels_
-#df_all_commiters["subject_labels"] = labels
-
-from sklearn import metrics 
-
-score = metrics.silhouette_score(X, labels) 
-print(score)
-
-np.save("subjectlabels.npy", labels)
+#labels = db.labels_
+np.save("subjectHDBSCAN.npy", labels)
 gc.collect()
+
+labels = np.load("subjectHDBSCAN.npy")
+print(labels.shape)
+gc.collect()
+
+#from cuml.metrics.cluster.silhouette_score import cython_silhouette_score
+from sklearn.metrics import silhouette_score
+#score = cython_silhouette_score(X, labels, chunksize= 20000) 
+score = silhouette_score(X=X, labels=labels, metric= "euclidean", sampling= 0.1, n_jobs= 6)
+print(score)
+gc.collect()
+
