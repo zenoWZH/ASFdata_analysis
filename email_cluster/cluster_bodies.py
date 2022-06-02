@@ -14,18 +14,20 @@ import gc
 df_vector_bodies = pd.DataFrame(np.load("vector200_bodies.npy"))
 
 from cuml.cluster import HDBSCAN
-
+##################################################################
 X = df_vector_bodies[df_vector_bodies.columns].values
 print(X.shape)
 
-labels = HDBSCAN(min_samples=10).fit_predict(X)
-print(labels.shape)
+for i in range(1,5):
+    print("min samples= ", i)
+    labels = HDBSCAN(min_samples= i).fit_predict(X)
+    print(labels.shape)
 
-#labels = db.labels_
-np.save("subjectHDBSCAN.npy", labels)
-gc.collect()
-
-labels = np.load("subjectHDBSCAN.npy")
+    np.save("subjectHDBSCAN_s"+str(i)+".npy", labels)
+    gc.collect()
+#################################################################
+X = np.load("vector200_bodies.npy")
+labels = np.load("subjectHDBSCAN_s5.npy")
 print(labels.shape)
 gc.collect()
 
@@ -35,4 +37,3 @@ from sklearn.metrics import silhouette_score
 score = silhouette_score(X=X, labels=labels, metric= "euclidean", sample_size= 10000, n_jobs= 6)
 print(score)
 gc.collect()
-
