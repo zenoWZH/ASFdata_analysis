@@ -32,7 +32,7 @@ gc.collect()
 #from cuml.metrics.cluster.silhouette_score import cython_silhouette_score
 from sklearn.metrics import silhouette_score
 #score = cython_silhouette_score(X, labels, chunksize= 20000) 
-score = silhouette_score(X=X, labels=labels, metric= "euclidean", sampling= 0.1, n_jobs= 6)
+score = silhouette_score(X=X, labels=labels, metric= "euclidean", sample_size= 10000, n_jobs= 6)
 print(score)
 gc.collect()
 
