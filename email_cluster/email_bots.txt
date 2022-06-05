@@ -1,0 +1,36 @@
+Apache Jenkins Server
+ASF GitHub Bot (JIRA)
+bugzilla
+AmplabJenkins
+Hudson (JIRA)
+ASF subversion and git services (JIRA)
+SparkQA
+Hadoop QA (JIRA)
+ASF GitHub Bot (Jira)
+Jenkins (Code Review)
+asfgit
+Apache Wiki
+Apache Spark (JIRA)
+stack (JIRA)
+bugzilla-daemon
+Apache Hudson Server
+ASF subversion and git services (Jira)
+Policeman Jenkins Server 
+git-site-role
+Hive QA (JIRA)
+CarbonDataQA
+Impala Public Jenkins (Code Review)
+Beam JIRA Bot (Jira)
+Public JSON file updates
+jira
+no-reply
+GitBox
+ASF GitHub Bot (JIRA)
+ASF IRC Bot
+ASF IRC Services
+ASF - Maillists
+asfbot
+Mesos ReviewBot
+CloudBees pull request builder plugin
+Apache Infrastructure Team
+buildbot
