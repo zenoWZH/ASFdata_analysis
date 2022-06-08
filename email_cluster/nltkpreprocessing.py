@@ -115,11 +115,20 @@ from multiprocessing import Pool
 
 if __name__ == '__main__' :
     print("Reading Data")
-    df = pd.read_csv('./emails_titlepreprocessed.csv')
-    print("Start Preprocessing Email Bodies")
+    df = pd.read_csv('./edges_emails.csv')
+    print("Start Preprocessing Email Titles")
 
     epre = EmailPreprocessor()
     
+    bodies = df['subject'].values
+    with Pool(6) as p:
+        result = list(tqdm(p.imap(epre.stopandlemma, bodies, chunksize=6), total=len(bodies), desc="Multiprocess preprocessing Titles"))
+    p.close()
+    p.join()
+    df['subject'] = pd.Series(result)
+
+    print("Start Preprocessing Email Bodies")
+
     bodies = df['body'].values
     with Pool(6) as p:
         result = list(tqdm(p.imap(epre.stopandlemma, bodies, chunksize=6), total=len(bodies), desc="Multiprocess preprocessing Bodies"))
@@ -127,5 +136,6 @@ if __name__ == '__main__' :
     p.join()
 
     df['body'] = pd.Series(result)
-    df.to_csv('./emails_preprocessed.csv', index= None)
     print("Bodies Done!!")
+    df.to_csv('./edges_emails_preprocessed.csv', index= None)
+    print("Saved!")

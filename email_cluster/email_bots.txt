@@ -34,3 +34,12 @@ Mesos ReviewBot
 CloudBees pull request builder plugin
 Apache Infrastructure Team
 buildbot
+
+#### Adding Bot Authors
+Confluence
+Jiraposter
+#Tsz Wo Nicholas Sze
+Continuum
+Continuum Vmbuild Server
+Weexbot
+#Neykov
