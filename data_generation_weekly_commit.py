@@ -20,7 +20,6 @@ to_path = './weekly_data/commits/'
 if not os.path.exists(to_path):
 	os.makedirs(to_path)
 
-
 print('grouping by period...')
 for project in tqdm(df):
 	weekly_df_dict = dict(tuple(df[project].groupby(df[project]['week'])))
