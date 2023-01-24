@@ -141,6 +141,10 @@ network_data*/
 
 *.tar.gz
 
+*.json
+
+*.zip
+
 # Language Models
 
 email_cluster/bertmodel/*
